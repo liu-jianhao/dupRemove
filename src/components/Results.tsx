@@ -54,6 +54,9 @@ export function Results({
   const [restoring, setRestoring] = useState(false);
   const [pendingUndo, setPendingUndo] = useState<PendingUndo | null>(null);
   const undoTimerRef = useRef<number | null>(null);
+  const trashBtnRef = useRef<HTMLButtonElement>(null);
+  const confirmModalRef = useRef<HTMLDivElement>(null);
+  const cancelConfirmRef = useRef<HTMLButtonElement>(null);
   // 大图对比：当前预览的 (组下标, 文件下标)
   const [preview, setPreview] = useState<{ gi: number; fi: number } | null>(null);
 
@@ -74,6 +77,39 @@ export function Results({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [preview, groups]);
+
+  // 删除确认模态：Esc 取消、Tab 在对话框内循环、关闭后焦点回到「移入废纸篓」
+  useEffect(() => {
+    if (!confirming) return;
+    cancelConfirmRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setConfirming(false);
+        return;
+      }
+      if (e.key !== "Tab" || !confirmModalRef.current) return;
+      const focusables = confirmModalRef.current.querySelectorAll<HTMLElement>(
+        "button:not([disabled])",
+      );
+      const list = Array.from(focusables);
+      if (list.length < 2) return;
+      const first = list[0];
+      const last = list[list.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      trashBtnRef.current?.focus();
+    };
+  }, [confirming]);
 
   // 分组变化时重置勾选。
   // 决策 #2（2026-10-28）：只有「内容一致」的项默认勾选 —— 完全相同的组
@@ -168,8 +204,7 @@ export function Results({
       if (failed.length > 0) {
         const first = failed[0].error ?? "未知原因";
         setToast(
-          `${failed.length} 张未能移入废纸篓（${first}）${
-            moved.length > 0 ? `，另 ${moved.length} 张已成功` : ""
+          `${failed.length} 张未能移入废纸篓（${first}）${moved.length > 0 ? `，另 ${moved.length} 张已成功` : ""
           }`,
         );
       } else {
@@ -215,7 +250,12 @@ export function Results({
         <div className="results-head">
           <h2>没有发现重复照片</h2>
           <p className="muted">
-            扫描了 {stats.scanned} 张图片（缓存命中 {stats.cache_hits} 张），没有找到重复或相似的照片。
+            扫描了 {stats.scanned} 张图片（缓存命中 {stats.cache_hits} 张）
+            {stats.skipped_decode > 0 && ` · ${stats.skipped_decode} 张无法解码`}
+            {stats.skipped_placeholder > 0 &&
+              ` · 跳过 ${stats.skipped_placeholder} 个云端未下载文件`}
+            {stats.walk_errors > 0 && ` · ${stats.walk_errors} 个文件无法访问`}
+            ，没有找到重复或相似的照片。
           </p>
           <button className="ghost" onClick={onRescan}>
             换一个文件夹
@@ -235,6 +275,7 @@ export function Results({
           <p className="muted">
             完全相同 {stats.exact_groups} 组 · 几乎一样 {stats.similar_groups} 组 ·
             扫描 {stats.scanned} 张（缓存命中 {stats.cache_hits}）
+            {stats.skipped_decode > 0 && ` · ${stats.skipped_decode} 张无法解码`}
             {stats.skipped_placeholder > 0 &&
               ` · 跳过 ${stats.skipped_placeholder} 个云端未下载文件`}
             {stats.walk_errors > 0 && ` · ${stats.walk_errors} 个文件无法访问`}
@@ -396,6 +437,7 @@ export function Results({
             {/* 撤销窗口期间禁用新删除：连续删除会顶掉上一批的撤销入口，
                 干脆等 8 秒窗口过去或先撤销，保证任何一批都可撤销到底。 */}
             <button
+              ref={trashBtnRef}
               className="danger"
               disabled={selected.size === 0 || trashing || pendingUndo != null}
               title={pendingUndo != null ? "撤销窗口期间暂不能删除，请先撤销或等待倒计时结束" : undefined}
@@ -408,19 +450,35 @@ export function Results({
       )}
 
       {confirming && (
-        <div className="modal-mask" onClick={() => setConfirming(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h3>确认移入废纸篓？</h3>
+        <div
+          className="modal-mask"
+          role="presentation"
+          onClick={() => setConfirming(false)}
+        >
+          <div
+            ref={confirmModalRef}
+            className="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="trash-confirm-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 id="trash-confirm-title">确认移入废纸篓？</h3>
             <p>
               将把 <span className="num">{selected.size}</span> 张照片移入系统废纸篓，
               释放 <span className="num">{formatBytes(selectedBytes)}</span> 空间。
             </p>
             <p className="muted">不会被永久删除 —— 你随时可以从系统废纸篓里恢复。</p>
             <div className="modal-actions">
-              <button className="ghost" onClick={() => setConfirming(false)}>
+              <button
+                ref={cancelConfirmRef}
+                type="button"
+                className="ghost"
+                onClick={() => setConfirming(false)}
+              >
                 取消
               </button>
-              <button className="danger" onClick={doTrash} disabled={trashing}>
+              <button type="button" className="danger" onClick={doTrash} disabled={trashing}>
                 {trashing ? "处理中…" : "确认移入"}
               </button>
             </div>

@@ -377,6 +377,7 @@ pub fn group_all_cancellable(
     let groups = build_group_json(
         fps, &clusters, &kinds, &hash_of, thumb_dir, &mut stats, progress, cancel,
     )?;
+    let _ = thumbs::prune_cache(thumb_dir);
     Ok((groups, stats))
 }
 

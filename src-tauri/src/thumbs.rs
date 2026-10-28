@@ -47,6 +47,61 @@ pub fn ensure_thumb(src: &Path, mtime_ns: u64, cache_dir: &Path) -> Option<PathB
     Some(dst)
 }
 
+/// 缩略图缓存上限（ponytail：单目录 + 按 mtime 删最旧；扫描/regroup 结束调用一次）。
+pub const THUMB_CACHE_MAX_FILES: usize = 1000;
+pub const THUMB_CACHE_MAX_BYTES: u64 = 150 * 1024 * 1024;
+
+/// 超出上限时按修改时间淘汰最旧 `.jpg`，返回删除数量。
+pub fn prune_cache(cache_dir: &Path) -> std::io::Result<usize> {
+    prune_cache_limited(cache_dir, THUMB_CACHE_MAX_FILES, THUMB_CACHE_MAX_BYTES)
+}
+
+fn prune_cache_limited(
+    cache_dir: &Path,
+    max_files: usize,
+    max_bytes: u64,
+) -> std::io::Result<usize> {
+    let entries = match std::fs::read_dir(cache_dir) {
+        Ok(e) => e,
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(0),
+        Err(e) => return Err(e),
+    };
+    let mut files: Vec<(PathBuf, std::time::SystemTime, u64)> = Vec::new();
+    for ent in entries.flatten() {
+        let path = ent.path();
+        if path.extension().and_then(|s| s.to_str()) != Some("jpg") {
+            continue;
+        }
+        let meta = ent.metadata()?;
+        if !meta.is_file() {
+            continue;
+        }
+        files.push((
+            path,
+            meta.modified().unwrap_or(std::time::UNIX_EPOCH),
+            meta.len(),
+        ));
+    }
+    let mut count = files.len();
+    let mut total_bytes: u64 = files.iter().map(|(_, _, s)| s).sum();
+    if count <= max_files && total_bytes <= max_bytes {
+        return Ok(0);
+    }
+    files.sort_by_key(|(_, t, _)| *t);
+    let mut removed = 0usize;
+    for (path, _, size) in files {
+        if count <= max_files && total_bytes <= max_bytes {
+            break;
+        }
+        if std::fs::remove_file(&path).is_ok() {
+            removed += 1;
+            count -= 1;
+            total_bytes = total_bytes.saturating_sub(size);
+        }
+    }
+    Ok(removed)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -83,5 +138,26 @@ mod tests {
         // mtime 变化 → 新 key → 新文件
         let t3 = ensure_thumb(&src, 200, &cache).unwrap();
         assert_ne!(t1, t3);
+    }
+
+    #[test]
+    fn prune_cache_evicts_oldest_first() {
+        let dir = tempfile::tempdir().unwrap();
+        for i in 0..5 {
+            let p = dir.path().join(format!("{i}.jpg"));
+            std::fs::write(&p, vec![0u8; 64]).unwrap();
+            std::thread::sleep(std::time::Duration::from_millis(20));
+        }
+        let n = prune_cache_limited(dir.path(), 3, u64::MAX).unwrap();
+        assert_eq!(n, 2);
+        let left: Vec<_> = std::fs::read_dir(dir.path())
+            .unwrap()
+            .flatten()
+            .filter(|e| e.path().extension().and_then(|s| s.to_str()) == Some("jpg"))
+            .map(|e| e.file_name().to_string_lossy().into_owned())
+            .collect();
+        assert_eq!(left.len(), 3);
+        assert!(!left.contains(&"0.jpg".to_string()));
+        assert!(!left.contains(&"1.jpg".to_string()));
     }
 }

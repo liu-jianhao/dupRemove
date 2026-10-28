@@ -526,6 +526,11 @@ if (scenario === "empty") {
     await page.screenshot({ path: shotPath("trash-confirm.png") });
     const modal = await page.textContent(".modal");
     console.log("[confirm] 弹窗:", modal.replace(/\s+/g, " ").trim());
+    await page.keyboard.press("Escape");
+    await page.waitForSelector(".modal", { state: "detached", timeout: 5000 });
+    const stillOpen = await page.$(".modal");
+    if (stillOpen) throw new Error("Escape 应关闭删除确认模态");
+    console.log("[confirm] Escape 已关闭模态");
   }
 
   if (scenario === "trash-undo") {

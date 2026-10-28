@@ -45,13 +45,16 @@ async function gifFromPngs(pngs, outGif) {
         `[${i}:v]${scale},format=rgb24,trim=duration=${dur[i] ?? 1.5},setpts=PTS-STARTPTS[v${i}]`,
     )
     .join(";");
-  const concat = pngs.map((_, i) => `[v${i}]`).join("") + `concat=n=${pngs.length}:v=1:a=0[v];
-[v]split[s0][s1];[s0]palettegen=stats_mode=diff[p];[s1]paletteuse=dither=bayer:bayer_scale=3[p]`;
+  const n = pngs.length;
+  const concatIn = pngs.map((_, i) => `[v${i}]`).join("");
+  const filterComplex = `${filters};${concatIn}concat=n=${n}:v=1:a=0[vcat];[vcat]split[s0][s1];[s0]palettegen=stats_mode=diff[p];[s1][p]paletteuse=dither=bayer:bayer_scale=3[out]`;
   const args = [
     "-y",
     ...pngs.flatMap((p) => ["-loop", "1", "-i", p]),
     "-filter_complex",
-    filters + ";" + concat,
+    filterComplex,
+    "-map",
+    "[out]",
     "-gifflags",
     "+transdiff",
     outGif,

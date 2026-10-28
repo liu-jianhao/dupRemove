@@ -1,6 +1,6 @@
 [package]
 name = "dupremove"
-version = "0.1.0"
+version = "0.2.0"
 description = "完全离线的 macOS 照片去重工具"
 edition = "2021"
 # 存在多个 bin（GUI + CLI 冒烟入口）时，cargo run 需要显式指定目标
