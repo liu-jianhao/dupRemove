@@ -1,0 +1,91 @@
+{
+  "dir": "/tmp/photo_test2",
+  "elapsed_ms": 7,
+  "groups": [
+    {
+      "files": [
+        {
+          "height": 1000,
+          "identical": true,
+          "is_best": true,
+          "path": "/tmp/photo_test2/base_copy.jpg",
+          "size": 174025,
+          "thumb_path": "scripts/fixtures/thumbs/6424a004dff8c402.jpg",
+          "width": 1600
+        },
+        {
+          "height": 1000,
+          "identical": true,
+          "is_best": false,
+          "path": "/tmp/photo_test2/base.jpg",
+          "size": 174025,
+          "thumb_path": "scripts/fixtures/thumbs/56e60e1d2ee49439.jpg",
+          "width": 1600
+        },
+        {
+          "height": 1000,
+          "identical": false,
+          "is_best": false,
+          "path": "/tmp/photo_test2/base_recompressed.jpg",
+          "size": 89395,
+          "thumb_path": "scripts/fixtures/thumbs/427bb92b1028c2ba.jpg",
+          "width": 1600
+        },
+        {
+          "height": 500,
+          "identical": false,
+          "is_best": false,
+          "path": "/tmp/photo_test2/base_800.jpg",
+          "size": 61161,
+          "thumb_path": "scripts/fixtures/thumbs/dde1a120a8fb1622.jpg",
+          "width": 800
+        },
+        {
+          "height": 250,
+          "identical": false,
+          "is_best": false,
+          "path": "/tmp/photo_test2/sub/base_400.jpg",
+          "size": 23486,
+          "thumb_path": "scripts/fixtures/thumbs/8b70714d9dd8c131.jpg",
+          "width": 400
+        }
+      ],
+      "kind": "similar"
+    },
+    {
+      "files": [
+        {
+          "height": 1000,
+          "identical": true,
+          "is_best": true,
+          "path": "/tmp/photo_test2/twin_a.jpg",
+          "size": 174025,
+          "thumb_path": "scripts/fixtures/thumbs/e1a0b2c3d4e5f607.jpg",
+          "width": 1600
+        },
+        {
+          "height": 1000,
+          "identical": true,
+          "is_best": false,
+          "path": "/tmp/photo_test2/twin_b.jpg",
+          "size": 174025,
+          "thumb_path": "scripts/fixtures/thumbs/f2b1c3d4e5f60718.jpg",
+          "width": 1600
+        }
+      ],
+      "kind": "exact"
+    }
+  ],
+  "stats": {
+    "cache_hits": 8,
+    "decoded": 8,
+    "duplicate_files": 5,
+    "exact_groups": 1,
+    "new_fingerprints": 0,
+    "reclaimable_bytes": 522092,
+    "scanned": 8,
+    "similar_groups": 1,
+    "skipped_decode": 0
+  },
+  "threshold": 8
+}

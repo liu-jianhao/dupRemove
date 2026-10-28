@@ -1,0 +1,58 @@
+[package]
+name = "dupremove"
+version = "0.1.0"
+description = "完全离线的 macOS 照片去重工具"
+edition = "2021"
+# 存在多个 bin（GUI + CLI 冒烟入口）时，cargo run 需要显式指定目标
+default-run = "dupremove"
+
+[lib]
+name = "dupremove_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["protocol-asset"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# 核心管线依赖
+walkdir = "2"
+rayon = "1"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp", "gif", "bmp"] }
+kamadak-exif = "0.6"
+blake3 = "1"
+rusqlite = { version = "0.32", features = ["bundled"] }
+base64 = "0.22"
+tauri-plugin-dialog = "2.8.3"
+
+# 移入废纸篓：用 Foundation 的 NSFileManager.trashItemAtURL:resultingItemURL:
+# 拿到文件在废纸篓里的真实路径（trash crate 走 AppleScript + Finder，拿不到，
+# 且在无 GUI 会话下会报权限违例 -10004）。
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6"
+objc2-core-foundation = { version = "0.3.2", features = ["CFNumber"] }
+objc2-core-graphics = "0.3.2"
+objc2-foundation = { version = "0.3.2", default-features = false, features = [
+    "std",
+    "NSError",
+    "NSFileManager",
+    "NSString",
+    "NSURL",
+] }
+objc2-image-io = "0.3.2"
+
+[dev-dependencies]
+tempfile = "3"
+# tauri 的 test feature 是空 feature（零额外依赖），
+# 用于用 mock runtime 在单测里验证 asset 协议的 scope 行为
+tauri = { version = "2", features = ["test"] }
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = 3
+panic = "abort"
+strip = true

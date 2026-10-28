@@ -1,0 +1,823 @@
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue",
+    "Microsoft YaHei", sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #1c1c1e;
+  background: #f5f5f7;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f5f7;
+  color: #1c1c1e;
+}
+
+.app {
+  min-height: 100vh;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.muted {
+  color: #6e6e73;
+  font-size: 13px;
+  margin: 0;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* ---------- 空状态 ---------- */
+.empty {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 40px 24px;
+}
+
+.empty-hero {
+  text-align: center;
+}
+
+.logo {
+  position: relative;
+  width: 72px;
+  height: 56px;
+  margin: 0 auto 20px;
+}
+
+.logo-card {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #4f46e5;
+  opacity: 0.9;
+}
+
+.logo-card-dup {
+  left: 28px;
+  top: 12px;
+  background: #a5b4fc;
+  opacity: 1;
+}
+
+.empty-hero h1 {
+  margin: 0 0 8px;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.promise {
+  margin: 0;
+  color: #6e6e73;
+  font-size: 14px;
+}
+
+.empty-panel {
+  width: 100%;
+  max-width: 460px;
+  background: #fff;
+  border: 1px solid #e5e5ea;
+  border-radius: 14px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-label {
+  font-size: 13px;
+  color: #6e6e73;
+}
+
+.field-hint {
+  font-size: 12px;
+  color: #8e8e93;
+}
+
+.segmented {
+  display: inline-flex;
+  background: #f0f0f3;
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+  align-self: flex-start;
+}
+
+.segmented.small .seg {
+  padding: 4px 12px;
+  font-size: 13px;
+}
+
+.seg {
+  padding: 6px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #3a3a3c;
+  transition: background 0.15s, color 0.15s;
+}
+
+.seg.active {
+  background: #fff;
+  color: #1c1c1e;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.seg:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #3a3a3c;
+  cursor: pointer;
+}
+
+.primary {
+  background: #4f46e5;
+  color: #fff;
+  padding: 11px 18px;
+  border-radius: 9px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.primary:hover:not(:disabled) {
+  background: #4338ca;
+}
+
+.primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.ghost {
+  border: 1px solid #d8d8dd;
+  background: #fff;
+  color: #3a3a3c;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.ghost:hover {
+  background: #f2f2f5;
+}
+
+.danger {
+  background: #dc2626;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.danger:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.danger:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.empty-notes {
+  margin: 0;
+  padding-left: 18px;
+  color: #8e8e93;
+  font-size: 12.5px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ---------- 扫描中 ---------- */
+.scanning {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.scan-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border: 1px solid #e5e5ea;
+  border-radius: 14px;
+  padding: 32px 26px;
+  text-align: center;
+}
+
+.scan-card h2 {
+  margin: 18px 0 6px;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.scan-folder {
+  margin: 0 0 18px;
+  font-size: 12.5px;
+  color: #8e8e93;
+  word-break: break-all;
+}
+
+.spinner {
+  width: 34px;
+  height: 34px;
+  margin: 0 auto;
+  border: 3px solid #e0e0e8;
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.progress {
+  height: 6px;
+  background: #eeeef2;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #4f46e5;
+  border-radius: 3px;
+  transition: width 0.2s ease;
+}
+
+.scan-count {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: #3a3a3c;
+  font-variant-numeric: tabular-nums;
+}
+
+.scan-hint {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #8e8e93;
+}
+
+.scan-stage {
+  margin: 0 0 12px;
+  color: #4f46e5;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.scan-error {
+  margin: 10px 0 0;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.cancel-btn {
+  margin-top: 18px;
+  border: 1px solid #d8d8dd;
+  background: #fff;
+  color: #6e6e73;
+  padding: 7px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.cancel-btn:hover {
+  background: #f2f2f5;
+  color: #1c1c1e;
+}
+
+.scan-card .error {
+  margin: 12px 0 0;
+}
+
+/* ---------- 结果页 ---------- */
+.results {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 22px 24px 110px;
+}
+
+.results-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.results-head h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.head-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.group-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.group {
+  background: #fff;
+  border: 1px solid #e5e5ea;
+  border-radius: 12px;
+  padding: 14px 16px;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 220px;
+}
+
+.group-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.badge.exact {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.badge.similar {
+  background: #f3e8ff;
+  color: #6b21a8;
+}
+
+.thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.thumb {
+  position: relative;
+  width: 116px;
+  border-radius: 9px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: #f2f2f5;
+}
+
+.thumb.marked {
+  border-color: #dc2626;
+}
+
+/* 未勾选 = 保留：灰边框，明确区别于「待删除」的红框 */
+.thumb:not(.marked) {
+  border-color: #d8d8dd;
+}
+
+/* 「系统建议保留」的绿点：放在底部信息行左侧，不与右上角勾选框抢位置 */
+.keep-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #16a34a;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.thumb img {
+  display: block;
+  width: 100%;
+  height: 88px;
+  object-fit: cover;
+  background: #e8e8ed;
+}
+
+/* 图片区定位容器：角标相对图片定位，避免与底部信息行错位 */
+.thumb-img {
+  position: relative;
+}
+
+/* 内容差异角标：置于图片左下角。
+   右上角是勾选框，两者必须分开。 */
+.content-tag {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 5px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.94);
+  color: #3a3a3c;
+}
+
+.content-tag.same {
+  background: #16a34a;
+  color: #fff;
+}
+
+.content-tag.diff {
+  background: #f59e0b;
+  color: #fff;
+}
+
+/* 勾选框：每一张照片都有（含系统建议保留的那张）。
+   点击区域做成 26×26 的方块，鼠标点得中。 */
+.pick {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.pick:hover {
+  background: #fff;
+  border-color: rgba(0, 0, 0, 0.28);
+}
+
+.pick input {
+  margin: 0;
+  width: 17px;
+  height: 17px;
+  accent-color: #dc2626;
+  cursor: pointer;
+}
+
+/* 已勾选：勾选框整体染红，和缩略图的红框呼应 */
+.pick.on {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.pick.on input {
+  accent-color: #fff;
+}
+
+/* 组内批量操作 */
+.group-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 12px;
+}
+
+button.link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  color: #6b6b70;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+button.link:hover:not(:disabled) {
+  color: #1a1a1c;
+}
+
+button.link:disabled {
+  opacity: 0.4;
+  cursor: default;
+  text-decoration: none;
+}
+
+/* 操作说明 */
+.hint {
+  margin: 0 0 14px;
+  font-size: 12.5px;
+  color: #6b6b70;
+}
+
+.hint b {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.thumb-meta {
+  font-size: 10.5px;
+  color: #8e8e93;
+  padding: 3px 6px 4px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- 底部操作条 ---------- */
+.action-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid #e5e5ea;
+}
+
+.action-info {
+  font-size: 14px;
+  color: #3a3a3c;
+}
+
+/* ---------- 弹层 ---------- */
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+/* ---------- 大图对比 lightbox（阶段 3）---------- */
+.lightbox-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 55;
+}
+
+.lightbox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: min(960px, 94vw);
+  padding: 20px;
+}
+
+.lightbox-img {
+  max-width: min(900px, 90vw);
+  max-height: 60vh;
+  border-radius: 10px;
+  background: #000;
+  object-fit: contain;
+}
+
+.lightbox-meta {
+  color: #fff;
+  font-size: 13.5px;
+  text-align: center;
+}
+
+.lightbox-path {
+  color: #98989d;
+  font-size: 12px;
+  max-width: 80vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  direction: rtl;
+  text-align: center;
+}
+
+.lightbox-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.lightbox-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 88vw;
+}
+
+.lightbox-strip img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  opacity: 0.7;
+}
+
+.lightbox-strip img.on {
+  border-color: #34c759;
+  opacity: 1;
+}
+
+.lightbox-hint {
+  color: #6c6c70;
+  font-size: 11.5px;
+  margin: 0;
+}
+
+.thumb-img img {
+  cursor: zoom-in;
+}
+
+.modal {
+  width: 400px;
+  max-width: calc(100vw - 48px);
+  background: #fff;
+  border-radius: 14px;
+  padding: 22px;
+}
+
+.modal h3 {
+  margin: 0 0 10px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.modal p {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 88px;
+  transform: translateX(-50%);
+  background: #1c1c1e;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 9px;
+  font-size: 13px;
+  z-index: 60;
+  cursor: pointer;
+}
+
+/* ---------- 常驻撤销条 ----------
+   删除是不可逆动作（虽然可以从系统废纸篓恢复，但用户未必知道）。
+   一闪而过的 toast 不够 —— 用户看完文字就消失了，来不及点撤销。
+   做成底部常驻条 + 倒计时进度：既有明确的"你还能反悔"信号，
+   又不会永远挂在屏幕上。 */
+.undo-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 88px;
+  transform: translateX(-50%);
+  min-width: 420px;
+  max-width: calc(100vw - 48px);
+  background: #1c1c1e;
+  color: #fff;
+  border-radius: 12px;
+  padding: 12px 16px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  z-index: 60;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+
+.undo-text {
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+
+.undo-text .num {
+  color: #fff;
+  font-weight: 600;
+}
+
+.undo-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.undo-countdown {
+  font-size: 12px;
+  color: #a1a1a6;
+  font-variant-numeric: tabular-nums;
+  min-width: 22px;
+  text-align: right;
+}
+
+.undo-btn {
+  background: #fff;
+  color: #1c1c1e;
+  padding: 6px 14px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.undo-btn:hover:not(:disabled) {
+  background: #e5e5ea;
+}
+
+.undo-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* 底部倒计时进度条：宽度随剩余时间线性收缩，一眼看出窗口还剩多久 */
+.undo-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  background: #4f46e5;
+  transition: width 1s linear;
+}
+
+/* 全部清完后的空态（切换档位/删除到没剩时） */
+.all-clean {
+  background: #fff;
+  border: 1px solid #e5e5ea;
+  border-radius: 12px;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.all-clean p {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
